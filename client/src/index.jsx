@@ -13,15 +13,32 @@ class App extends React.Component {
 
   }
 
+
+  componentDidMount() {
+    $.get({
+      url: 'repos',
+      success: (data) => {
+        console.log('Return all the repos', data)
+        this.setState({
+          repos: data
+        })
+        // upon receipt of success, we update the state with the popular repos
+      }
+    });
+  }
+
   search (term) {
     console.log(`${term} was searched`);
     // submit and ajax POST method request to the server and then onto Github
+    console.log(typeof term)
 
     $.post({
-      url: '',
-      data: term,
-      success:
-        console.log('Posted Github Handle: ', term)
+      url: 'repos',
+      data: {user: term},
+      success: (data) => {
+        console.log('Send back should be a big: ', data)
+        // upon receipt of success, we should automatically rerender without req'ing refresh
+      }
     });
 
   }

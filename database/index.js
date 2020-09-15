@@ -20,4 +20,32 @@ let save = (table) => {
   })
 }
 
+let addRepos = (reposData) => {
+
+  reposData.map((repoData) => {
+    // the question is how do I insert into the Repo table
+    // repo.insert is not a function....
+    console.log('Repo ID: ', repoData.id)
+    Repo.insert(
+      [
+        {repoID: repoData.id},
+        {fullName: repoData.full_name},
+        {stargazers: repoData.stargazer_count},
+        {forkCount: repoData.forks_count},
+        {username: repoData.owner.login}
+      ]
+    );
+  });
+
+  console.log('Check DB now')
+}
+
+let returnRepos = () => {
+  console.log('DB RESULTS')
+  // returning the below item is a big long thing
+  Repo.find({forkCount: {$gte: 1}})
+}
+
 module.exports.save = save;
+module.exports.addRepos = addRepos;
+module.exports.returnRepos = returnRepos;
