@@ -25,6 +25,7 @@ let addRepos = (reposData) => {
   reposData.map((repoData) => {
     // the question is how do I insert into the Repo table
     // repo.insert is not a function....
+    console.log('Repo Table: ', Repo)
     console.log('Repo ID: ', repoData.id)
     Repo.insert(
       [

@@ -19,9 +19,7 @@ let getReposByUsername = (handle, callback)=> {
 
   axios.get(options.url)
     .then((response) => {
-      // console.log('Full getRepos in Helper: ', response.data);
       reposByUser = response.data;
-      // console.log('Repos By Username in Promise: ',reposByUser)
       return callback(null, reposByUser);
     })
     .catch(function(error) {

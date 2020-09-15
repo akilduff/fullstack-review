@@ -19,7 +19,7 @@ app.post('/repos', urlencodedParser, function (req, res) {
       console.log('ERROR on server: ', err)
     } else {
       console.log('RESULT on server: ', result)
-      console.log(typeof addRepos.addRepos)
+      console.log('Type of addedRepos.addedRepos: ',typeof addRepos.addRepos)
       addRepos.addRepos(result)
       return result
     }
