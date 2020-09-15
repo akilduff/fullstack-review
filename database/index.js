@@ -11,11 +11,13 @@ let repoSchema = mongoose.Schema({
 
 let Repo = mongoose.model('Repo', repoSchema);
 
-let save = (err, results) => {
-  if (err) {
+let save = (table) => {
+  Repo.create(table, (err, results) => {
+    if (err) {
     return console.log('ERROR: ', err);
-  }
-  return results;
+    }
+    console.log(results);
+  })
 }
 
 module.exports.save = save;

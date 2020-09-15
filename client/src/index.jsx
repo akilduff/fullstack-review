@@ -16,7 +16,13 @@ class App extends React.Component {
   search (term) {
     console.log(`${term} was searched`);
     // submit and ajax POST method request to the server and then onto Github
-    $.post(server, etc...)
+
+    $.post({
+      url: '',
+      data: term,
+      success:
+        console.log('Posted Github Handle: ', term)
+    });
 
   }
 
