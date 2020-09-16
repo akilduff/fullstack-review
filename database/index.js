@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
 mongoose.connect('mongodb://localhost/fetcher');
 
+
 let repoSchema = mongoose.Schema({
   repoID: Number,
   fullName: String,
@@ -11,42 +12,61 @@ let repoSchema = mongoose.Schema({
 
 let Repo = mongoose.model('Repo', repoSchema);
 
-let save = (table) => {
-  Repo.create(table, (err, results) => {
-    if (err) {
-    return console.log('ERROR: ', err);
-    }
-    console.log(results);
-  })
-}
-
-let addRepos = (reposData) => {
+let saveCreate = (reposData, callback) => {
 
   reposData.map((repoData) => {
-    // the question is how do I insert into the Repo table
-    // repo.insert is not a function....
-    console.log('Repo Table: ', Repo)
-    console.log('Repo ID: ', repoData.id)
-    Repo.insert(
-      [
-        {repoID: repoData.id},
-        {fullName: repoData.full_name},
-        {stargazers: repoData.stargazer_count},
-        {forkCount: repoData.forks_count},
-        {username: repoData.owner.login}
-      ]
-    );
+    var newRepoDetails = {
+      repoID: repoData.id,
+      fullName: repoData.full_name,
+      stargazers: repoData.stargazers_count,
+      forkCount: repoData.forks_count,
+      username: repoData.owner.login
+    }
+
+    if (repoData.full_name === '') {
+      console.log('Repo with empty name')
+    } else {
+      checkRepos(repoData.full_name, (err, result) => {
+        if (err || JSON.stringify(result) !== JSON.stringify([])) {
+          console.log('Duplicate exists, do not save')
+        } else {
+          var repoTitle = new Repo(newRepoDetails);
+          repoTitle.save(function (err) {
+            if (err) {
+              console.log('ERROR in mongoose save process')
+              callback(err, null)
+            } else {
+              callback(null, newRepoDetails)
+            }
+          });
+        }
+      });
+    }
   });
-
-  console.log('Check DB now')
 }
 
-let returnRepos = () => {
-  console.log('DB RESULTS')
-  // returning the below item is a big long thing
-  Repo.find({forkCount: {$gte: 1}})
+let returnRepos = (callback) => {
+
+  var getAll = Repo.find({}, (err, result) => {
+    if (err) {
+      console.log('Err with query')
+      callback(err, null)
+    } else {
+      callback(null, result)
+    }
+  });
 }
 
-module.exports.save = save;
-module.exports.addRepos = addRepos;
+let checkRepos = (repoName, callback) => {
+  var getAll = Repo.find({fullName: repoName}, (err, result) => {
+    if (err) {
+      console.log('Err with query')
+      return callback(err, null)
+    } else {
+      return callback(null, result)
+    }
+  });
+}
+
+module.exports.saveCreate = saveCreate;
 module.exports.returnRepos = returnRepos;
